@@ -90,3 +90,349 @@ INSERT INTO DetallePedidos (ID_Detalle, ID_Pedido, ID_Medicamento, Cantidad, Sub
 (5, 3, 5, 2, 24.00),
 (6, 4, 1, 4, 42.00),
 (7, 5, 2, 6, 94.50);
+
+
+
+
+
+
+Proyecto
+
+-- Crear la tabla de programas académicos
+CREATE TABLE programas_academicos (
+    codigo_programa INT PRIMARY KEY,
+    nombre_programa VARCHAR(255)
+);
+
+-- Crear la tabla de estudiantes
+CREATE TABLE estudiantes (
+    estudiante_id INT PRIMARY KEY,
+    nombre VARCHAR(255),
+    apellidos VARCHAR(255),
+    fecha_nacimiento DATE,
+    correo VARCHAR(255),
+    cedula INT,
+    codigo_programa INT,
+    CONSTRAINT fk_estudiantes_programa FOREIGN KEY (codigo_programa)
+        REFERENCES programas_academicos(codigo_programa)
+);
+
+-- Crear la tabla de cursos
+CREATE TABLE cursos (
+    codigo_curso VARCHAR(50) PRIMARY KEY,
+    nombre VARCHAR(255),
+    descripcion VARCHAR(255),
+    maximo_estudiantes INT,
+    numero_semestre INT
+);
+
+-- Crear la tabla de calificaciones de los estudiantes
+CREATE TABLE estudiantes_calificacion (
+    estudiante_id INT,
+    codigo_curso VARCHAR(50),
+    calificacion INT,
+    fecha_asignada DATE,
+    PRIMARY KEY (estudiante_id, codigo_curso),
+    CONSTRAINT fk_estudiantes_calificacion FOREIGN KEY (estudiante_id)
+        REFERENCES estudiantes(estudiante_id),
+    CONSTRAINT fk_cursos_calificacion FOREIGN KEY (codigo_curso)
+        REFERENCES cursos(codigo_curso)
+);
+
+-- Crear la tabla de semestre
+CREATE TABLE semestre (
+    numero_semestre INT,
+    año INT,
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    PRIMARY KEY (numero_semestre, año)
+);
+
+-- Crear la tabla de inscripciones
+CREATE TABLE inscripciones (
+    estudiante_id INT,
+    codigo_curso VARCHAR(50),
+    fecha_inscripcion DATE,
+    PRIMARY KEY (estudiante_id, codigo_curso),
+    CONSTRAINT fk_inscripciones_estudiante FOREIGN KEY (estudiante_id)
+        REFERENCES estudiantes(estudiante_id),
+    CONSTRAINT fk_inscripciones_curso FOREIGN KEY (codigo_curso)
+        REFERENCES cursos(codigo_curso)
+);
+
+-- Crear la tabla de materia_prerequisito
+CREATE TABLE materia_prerequisito (
+    codigo_curso VARCHAR(50),
+    codigo_prerequisito VARCHAR(50),
+    PRIMARY KEY (codigo_curso, codigo_prerequisito),
+    CONSTRAINT fk_materia_prerequisito_curso FOREIGN KEY (codigo_curso)
+        REFERENCES cursos(codigo_curso),
+    CONSTRAINT fk_materia_prerequisito_prerequisito FOREIGN KEY (codigo_prerequisito)
+        REFERENCES cursos(codigo_curso)
+);
+
+-- Crear la tabla de profesores
+CREATE TABLE profesores (
+    profesor_id INT PRIMARY KEY,
+    nombre VARCHAR(255),
+    apellidos VARCHAR(255),
+    fecha_fin DATE
+);
+
+-- Crear la tabla de catedras
+CREATE TABLE catedra (
+    catedra_id INT PRIMARY KEY,
+    nombre VARCHAR(255),
+    descripcion VARCHAR(255),
+    profesor_id INT,
+    CONSTRAINT fk_catedra_profesor FOREIGN KEY (profesor_id)
+        REFERENCES profesores(profesor_id)
+);
+
+-- Crear la tabla de aulas
+CREATE TABLE aulas (
+    aula_id INT PRIMARY KEY,
+    equipamiento VARCHAR(255),
+    numero_aula INT,
+    edificio VARCHAR(255),
+    capacidad INT
+);
+
+-- Crear la tabla de aula_curso (relaciona cursos con aulas)
+CREATE TABLE aula_curso (
+    aula_id INT,
+    codigo_curso VARCHAR(50),
+    PRIMARY KEY (aula_id, codigo_curso),
+    CONSTRAINT fk_aula_curso_aula FOREIGN KEY (aula_id)
+        REFERENCES aulas(aula_id),
+    CONSTRAINT fk_aula_curso_curso FOREIGN KEY (codigo_curso)
+        REFERENCES cursos(codigo_curso)
+);
+
+INSERT INTO programas_academicos (codigo_programa, nombre_programa)
+VALUES
+(1, 'Ingeniería en Sistemas'),
+(2, 'Medicina'),
+(3, 'Arquitectura'),
+(4, 'Psicología'),
+(5, 'Derecho'),
+(6, 'Administración de Empresas'),
+(7, 'Biotecnología'),
+(8, 'Ingeniería Civil'),
+(9, 'Diseño Gráfico'),
+(10, 'Filosofía'),
+(11, 'Matemáticas Aplicadas'),
+(12, 'Química'),
+(13, 'Ingeniería Mecánica'),
+(14, 'Antropología'),
+(15, 'Relaciones Internacionales');
+
+
+
+INSERT INTO estudiantes (estudiante_id, nombre, apellidos, fecha_nacimiento, correo, cedula, codigo_programa)
+VALUES
+(1, 'Juan', 'Pérez', '1999-04-01', 'juan.perez@mail.com', 12345678, 1),
+(2, 'Ana', 'González', '2000-05-12', 'ana.gonzalez@mail.com', 23456789, 2),
+(3, 'Carlos', 'Ramírez', '1998-08-22', 'carlos.ramirez@mail.com', 34567890, 3),
+(4, 'Lucía', 'Martínez', '1997-11-15', 'lucia.martinez@mail.com', 45678901, 4),
+(5, 'Pedro', 'Lopez', '1999-12-05', 'pedro.lopez@mail.com', 56789012, 5),
+(6, 'María', 'Hernández', '1998-07-19', 'maria.hernandez@mail.com', 67890123, 6),
+(7, 'Luis', 'Rodríguez', '1996-10-25', 'luis.rodriguez@mail.com', 78901234, 7),
+(8, 'Carmen', 'Sánchez', '1997-03-18', 'carmen.sanchez@mail.com', 89012345, 8),
+(9, 'Pablo', 'Jiménez', '1995-09-09', 'pablo.jimenez@mail.com', 90123456, 9),
+(10, 'Laura', 'Vargas', '2000-06-15', 'laura.vargas@mail.com', 10123456, 10),
+(11, 'Jorge', 'Ortiz', '1999-11-30', 'jorge.ortiz@mail.com', 11234567, 11),
+(12, 'Valeria', 'Castro', '1998-02-28', 'valeria.castro@mail.com', 12234567, 12),
+(13, 'Miguel', 'Díaz', '1997-05-10', 'miguel.diaz@mail.com', 13234567, 13),
+(14, 'Daniela', 'Ríos', '1996-08-21', 'daniela.rios@mail.com', 14234567, 14),
+(15, 'Andrés', 'Mendoza', '2000-12-12', 'andres.mendoza@mail.com', 15234567, 15),
+(16, 'Fernanda', 'Paredes', '1999-03-04', 'fernanda.paredes@mail.com', 16234567, 1),
+(17, 'Sergio', 'Navarro', '1998-07-22', 'sergio.navarro@mail.com', 17234567, 1),
+(18, 'Isabel', 'Guzmán', '1997-01-14', 'isabel.guzman@mail.com', 18234567, 1),
+(19, 'Ramón', 'Salazar', '1996-04-03', 'ramon.salazar@mail.com', 19234567, 1),
+(20, 'Carolina', 'Morales', '1999-08-29', 'carolina.morales@mail.com', 20234567, 2),
+(21, 'Roberto', 'Rivera', '1998-10-07', 'roberto.rivera@mail.com', 21234567, 1),
+(22, 'Paula', 'Muñoz', '1997-12-25', 'paula.munoz@mail.com', 22234567, 2),
+(23, 'Antonio', 'Aguilar', '1996-03-13', 'antonio.aguilar@mail.com', 23234567, 2),
+(24, 'Natalia', 'Flores', '2000-01-09', 'natalia.flores@mail.com', 24234567, 2),
+(25, 'Martín', 'Luna', '1999-06-17', 'martin.luna@mail.com', 25234567, 2),
+(26, 'Elena', 'Delgado', '1998-05-23', 'elena.delgado@mail.com', 26234567, 2),
+(27, 'Alberto', 'Cruz', '1997-11-11', 'alberto.cruz@mail.com', 27234567, 2),
+(28, 'Gabriela', 'Chávez', '1996-10-05', 'gabriela.chavez@mail.com', 28234567, 2),
+(29, 'Victor', 'Escobar', '1998-01-30', 'victor.escobar@mail.com', 29234567, 9),
+(30, 'Julia', 'Campos', '1999-04-26', 'julia.campos@mail.com', 30234567, 3),
+(31, 'Ángel', 'Rojas', '1997-09-08', 'angel.rojas@mail.com', 31234567, 3),
+(32, 'Fátima', 'Peña', '1996-12-19', 'fatima.pena@mail.com', 32234567, 3),
+(33, 'Diego', 'Molina', '1998-02-06', 'diego.molina@mail.com', 33234567, 3),
+(34, 'Claudia', 'Vega', '1997-07-24', 'claudia.vega@mail.com', 34234567, 4),
+(35, 'Raúl', 'Herrera', '1996-08-18', 'raul.herrera@mail.com', 35234567, 5),
+(36, 'Patricia', 'Blanco', '1999-01-15', 'patricia.blanco@mail.com', 36234567, 6),
+(37, 'Gonzalo', 'Ortiz', '1998-05-07', 'gonzalo.ortiz@mail.com', 37234567, 7),
+(38, 'Teresa', 'Soto', '1997-10-02', 'teresa.soto@mail.com', 38234567, 8),
+(39, 'Manuel', 'Alvarado', '1996-09-27', 'manuel.alvarado@mail.com', 39234567, 9),
+(40, 'Silvia', 'Fuentes', '1998-04-12', 'silvia.fuentes@mail.com', 40234567, 6),
+(41, 'Francisco', 'Medina', '1999-06-10', 'francisco.medina@mail.com', 41234567, 4),
+(42, 'Clara', 'Carrillo', '1997-02-22', 'clara.carrillo@mail.com', 42234567, 4),
+(43, 'Mario', 'Padilla', '1996-07-31', 'mario.padilla@mail.com', 43234567, 4),
+(44, 'Luisa', 'Cortés', '1998-03-20', 'luisa.cortes@mail.com', 44234567, 4),
+(45, 'Eduardo', 'Palacios', '1999-09-05', 'eduardo.palacios@mail.com', 45234567, 4),
+(46, 'Sara', 'Bravo', '1997-05-28', 'sara.bravo@mail.com', 46234567, 6),
+(47, 'Ernesto', 'Campos', '1996-10-10', 'ernesto.campos@mail.com', 47234567, 7),
+(48, 'Monica', 'Galeano', '1998-08-02', 'monica.galeano@mail.com', 48234567, 8),
+(49, 'Ricardo', 'Reyes', '1999-02-16', 'ricardo.reyes@mail.com', 49234567, 9),
+(50, 'Sofía', 'Moreno', '2000-01-10', 'sofia.moreno@mail.com', 12389012, 5);
+
+
+
+INSERT INTO cursos (codigo_curso, nombre, descripcion, maximo_estudiantes, numero_semestre)
+VALUES
+('C001', 'Algoritmos', 'Curso sobre estructuras y algoritmos', 30, 1),
+('C002', 'Física I', 'Introducción a la física', 40, 1),
+('C003', 'Matemáticas Discretas', 'Fundamentos matemáticos para la informática', 35, 1),
+('C004', 'Programación Avanzada', 'Desarrollo en lenguajes de bajo nivel', 25, 2),
+('C005', 'Ética Profesional', 'Estudio de la ética en el ámbito profesional', 40, 2),
+('C006', 'Bases de Datos', 'Diseño y consulta de bases de datos relacionales', 30, 2),
+('C007', 'Cálculo I', 'Fundamentos de cálculo diferencial e integral', 50, 1),
+('C008', 'Introducción a la Química', 'Conceptos básicos de química general', 35, 1),
+('C009', 'Análisis de Sistemas', 'Modelado y análisis de sistemas de información', 30, 3),
+('C010', 'Desarrollo Web', 'Diseño y programación de aplicaciones web', 25, 3),
+('C011', 'Redes de Computadoras', 'Principios de redes y comunicaciones', 30, 4),
+('C012', 'Inteligencia Artificial', 'Conceptos básicos de IA', 20, 4),
+('C013', 'Ingeniería de Software', 'Desarrollo de software basado en metodologías ágiles', 40, 3),
+('C014', 'Física II', 'Física aplicada en sistemas dinámicos', 40, 2),
+('C015', 'Optimización', 'Métodos y algoritmos para optimización matemática', 30, 4),
+('C016', 'Programación en Python', 'Introducción a la programación con Python', 50, 1),
+('C017', 'Sistemas Operativos', 'Gestión de sistemas operativos modernos', 25, 3),
+('C018', 'Análisis Numérico', 'Métodos numéricos para resolución de problemas', 30, 4),
+('C019', 'Seguridad Informática', 'Fundamentos de ciberseguridad y criptografía', 20, 5),
+('C020', 'Electrónica Digital', 'Diseño de circuitos digitales', 35, 2),
+('C021', 'Arquitectura de Computadoras', 'Estudio de hardware y componentes', 30, 3),
+('C022', 'Gestión de Proyectos', 'Planificación y ejecución de proyectos tecnológicos', 40, 5),
+('C023', 'Física III', 'Electromagnetismo y sus aplicaciones', 25, 4),
+('C024', 'Probabilidad y Estadística', 'Fundamentos estadísticos para análisis de datos', 50, 2),
+('C025', 'Lenguajes de Programación', 'Estudio comparativo de paradigmas de programación', 35, 3),
+('C026', 'Modelado de Datos', 'Creación de modelos de datos para sistemas complejos', 40, 3),
+('C027', 'Compiladores', 'Introducción al diseño y desarrollo de compiladores', 20, 4),
+('C028', 'Minería de Datos', 'Técnicas de análisis de grandes volúmenes de datos', 30, 5),
+('C029', 'Robótica', 'Fundamentos y aplicaciones de la robótica', 25, 5),
+('C030', 'Desarrollo Móvil', 'Creación de aplicaciones para dispositivos móviles', 30, 4);
+
+
+
+
+INSERT INTO estudiantes_calificacion (estudiante_id, codigo_curso, calificacion, fecha_asignada)
+VALUES
+(1, 'C001', 85, '2024-11-01'),
+(2, 'C002', 92, '2024-11-02'),
+(3, 'C003', 78, '2024-11-03'),
+(4, 'C004', 88, '2024-11-04'),
+(5, 'C005', 90, '2024-11-05'),
+(6, 'C006', 75, '2024-11-06'),
+(7, 'C007', 82, '2024-11-07'),
+(8, 'C008', 89, '2024-11-08'),
+(9, 'C009', 95, '2024-11-09'),
+(10, 'C010', 80, '2024-11-10'),
+(11, 'C011', 87, '2024-11-11'),
+(12, 'C012', 93, '2024-11-12'),
+(13, 'C013', 76, '2024-11-13'),
+(14, 'C014', 88, '2024-11-14'),
+(15, 'C015', 91, '2024-11-15'),
+(16, 'C016', 79, '2024-11-16'),
+(17, 'C017', 84, '2024-11-17'),
+(18, 'C018', 86, '2024-11-18'),
+(19, 'C019', 90, '2024-11-19'),
+(20, 'C020', 81, '2024-11-20'),
+(21, 'C021', 94, '2024-11-21'),
+(22, 'C022', 77, '2024-11-22'),
+(23, 'C023', 89, '2024-11-23'),
+(24, 'C024', 83, '2024-11-24'),
+(25, 'C025', 92, '2024-11-25'),
+(26, 'C026', 78, '2024-11-26'),
+(27, 'C027', 85, '2024-11-27'),
+(28, 'C028', 88, '2024-11-28'),
+(29, 'C029', 91, '2024-11-29'),
+(30, 'C030', 87, '2024-11-30'),
+(31, 'C001', 80, '2024-12-01'),
+(32, 'C002', 84, '2024-12-02'),
+(33, 'C003', 89, '2024-12-03'),
+(34, 'C004', 92, '2024-12-04'),
+(35, 'C005', 75, '2024-12-05'),
+(36, 'C006', 86, '2024-12-06'),
+(37, 'C007', 79, '2024-12-07'),
+(38, 'C008', 93, '2024-12-08'),
+(39, 'C009', 88, '2024-12-09'),
+(40, 'C010', 90, '2024-12-10'),
+(41, 'C011', 82, '2024-12-11'),
+(42, 'C012', 85, '2024-12-12'),
+(43, 'C013', 89, '2024-12-13'),
+(44, 'C014', 91, '2024-12-14'),
+(45, 'C015', 80, '2024-12-15'),
+(46, 'C016', 88, '2024-12-16'),
+(47, 'C017', 94, '2024-12-17'),
+(48, 'C018', 77, '2024-12-18'),
+(49, 'C019', 90, '2024-12-19'),
+(50, 'C020', 83, '2024-12-20');
+
+
+
+
+INSERT INTO inscripciones (estudiante_id, codigo_curso, fecha_inscripcion)
+VALUES
+(1, 'C001', '2024-01-15'),
+(2, 'C002', '2024-01-16'),
+(3, 'C003', '2024-01-17'),
+(4, 'C004', '2024-01-18'),
+(5, 'C005', '2024-01-19'),
+(6, 'C006', '2024-01-20'),
+(7, 'C007', '2024-01-21'),
+(8, 'C008', '2024-01-22'),
+(9, 'C009', '2024-01-23'),
+(10, 'C010', '2024-01-24');
+
+
+INSERT INTO materia_prerequisito (codigo_curso, codigo_prerequisito)
+VALUES
+('C002', 'C001'),
+('C003', 'C001'),
+('C004', 'C003'),
+('C005', 'C003'),
+('C006', 'C002'),
+('C007', 'C005'),
+('C008', 'C006'),
+('C009', 'C007'),
+('C010', 'C009'),
+('C011', 'C010');
+
+
+
+
+
+INSERT INTO profesores (profesor_id, nombre, apellidos, fecha_fin)
+VALUES
+(1, 'Alberto', 'Gómez', '2030-12-31'),
+(2, 'Laura', 'Sánchez', '2035-11-30'),
+(3, 'Carlos', 'Fernández', '2040-10-01'),
+(4, 'Marta', 'López', '2032-06-15'),
+(5, 'Ricardo', 'Hernández', '2040-05-10'),
+(6, 'Silvia', 'Ramírez', '2035-07-20'),
+(7, 'Jorge', 'Pérez', '2038-08-25'),
+(8, 'Elena', 'Martínez', '2042-09-30'),
+(9, 'Juan', 'Ruiz', '2045-03-01'),
+(10, 'Gabriela', 'Castro', '2033-04-18');
+
+
+
+
+
+INSERT INTO catedra (catedra_id, nombre, descripcion, profesor_id)
+VALUES
+(1, 'Introducción a Algoritmos', 'Cátedra sobre fundamentos algorítmicos', 1),
+(2, 'Física Básica', 'Cátedra enfocada en principios físicos básicos', 2),
+(3, 'Matemáticas Avanzadas', 'Cátedra sobre álgebra y cálculo avanzado', 3),
+(4, 'Programación Orientada a Objetos', 'Cátedra de lenguajes OOP', 4),
+(5, 'Gestión de Proyectos', 'Cátedra en dirección de proyectos', 5),
+(6, 'Inteligencia Artificial', 'Cátedra sobre redes neuronales y machine learning', 6),
+(7, 'Cálculo Diferencial', 'Fundamentos de derivadas e integrales', 7),
+(8, 'Redes de Computadoras', 'Cátedra de conexión y comunicación entre dispositivos', 8),
+(9, 'Sistemas Operativos', 'Diseño y arquitectura de sistemas operativos', 9),
+(10, 'Bases de Datos', 'Cátedra sobre modelado y optimización de bases de datos', 10);
